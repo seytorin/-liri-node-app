@@ -5,7 +5,8 @@ var fs = require('fs');
 var myTweets = process.argv[2];
 var spotifyReq = process.argv[2];
 var spotifySearch = process.argv[3];
-
+var imdbReq = process.argv[2];
+var imdbSearch = process.argv[3];
 
 //Twitter Section
 
@@ -75,3 +76,25 @@ console.log(album);
 });
 }
 //Spotify section end
+
+//Beginning of movie section
+var request = require('request');
+if(imdbReq === "movie-this"){
+request("http://www.omdbapi.com/?t=" + imdbSearch + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
+  if (!error && response.statusCode == 200) {
+    var title = JSON.parse(body).Title;
+    var releaseYear = JSON.parse(body).Year;
+    var rating = JSON.parse(body).imdbRating;
+    var rottenRating = JSON.parse(body).Ratings[1].Source + ": " + JSON.parse(body).Ratings[1].Value;
+    var country = JSON.parse(body).Country;
+    var language = JSON.parse(body).Language;
+    var plot = JSON.parse(body).Plot;
+    var actors = JSON.parse(body).Actors;
+    console.log(actors); 
+    console.log(JSON.parse(body).Ratings[1].Value); 
+
+  } else {
+    console.warn(error);
+  }
+});
+}
