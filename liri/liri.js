@@ -7,7 +7,11 @@ var spotifyReq = process.argv[2];
 var spotifySearch = process.argv[3];
 var imdbReq = process.argv[2];
 var imdbSearch = process.argv[3];
-
+var doWhat = process.argv[2];
+var artist;
+var song;
+var previewUrl;
+var album;
 //Twitter Section
 
 var Twitter = require('twitter');
@@ -56,10 +60,10 @@ spotify.search({ type: 'track', query: "\"" + spotifySearch + "\"" }, function(e
   if (err) {
     return console.log('Error occurred: ' + err);
   }
-  var artist = data.tracks.items[0].artists[0].name;
-  var song = data.tracks.items[0].name;
-  var previewUrl = data.tracks.items[0].preview_url;
-  var album = data.tracks.items[0].album.name;
+   artist = data.tracks.items[0].artists[0].name;
+   song = data.tracks.items[0].name;
+   previewUrl = data.tracks.items[0].preview_url;
+   album = data.tracks.items[0].album.name;
  //Artists name
 console.log(artist); 
 //Song name
@@ -98,3 +102,48 @@ request("http://www.omdbapi.com/?t=" + imdbSearch + "&y=&plot=short&apikey=trilo
   }
 });
 }
+//End of movie section
+
+//Beginning of do what it says section
+
+fs.readFile("random.txt", "utf8", function(err, data) {
+
+  if(err){
+    return console.log(err);
+  }
+  if(doWhat === "do-what-it-says"){
+  var dataArr = data.split(",");
+  dataArr = dataArr[1];
+  
+  
+var spotify = new Spotify({
+  id: spotifyID,
+  secret: spotifySecret
+});
+ 
+spotify.search({ type: 'track', query: "\"" + dataArr + "\"" }, function(err, data) {
+  if (err) {
+    return console.log('Error occurred: ' + err);
+  }
+   artist = data.tracks.items[0].artists[0].name;
+   song = data.tracks.items[0].name;
+   previewUrl = data.tracks.items[0].preview_url;
+   album = data.tracks.items[0].album.name;
+ //Artists name
+console.log(artist); 
+//Song name
+console.log(song);
+if(previewUrl !== null){
+console.log(previewUrl);
+}
+else{
+  console.log("No preview available");
+} 
+console.log(album);
+
+
+});
+
+}
+
+});
