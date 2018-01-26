@@ -6,7 +6,12 @@ var myTweets = process.argv[2];
 var spotifyReq = process.argv[2];
 var spotifySearch = process.argv[3];
 var imdbReq = process.argv[2];
-var imdbSearch = process.argv[3];
+// var imdbSearch = "\"" + process.argv[] + "\"";
+
+var sum = [];
+for (i = 3; i < process.argv.length; i++) {
+  sum.push(process.argv[i]);
+}
 var doWhat = process.argv[2];
 var artist;
 var song;
@@ -84,7 +89,20 @@ console.log(album);
 //Beginning of movie section
 var request = require('request');
 if(imdbReq === "movie-this"){
-request("http://www.omdbapi.com/?t=" + imdbSearch + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
+  var dataArr;
+  var dataString = "";
+
+    for(var i = 0; i<sum.length;i++){
+      dataArr = sum[i].split(",");
+      console.log(dataArr);
+        if(dataArr !== "undefined"){
+          dataArr = dataArr.toString();
+          dataString += dataArr + " ";
+        }
+      }
+      console.log(dataString);
+
+request("http://www.omdbapi.com/?t=" + dataString + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
   if (!error && response.statusCode == 200) {
     var title = JSON.parse(body).Title;
     var releaseYear = JSON.parse(body).Year;
