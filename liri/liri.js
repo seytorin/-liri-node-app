@@ -6,17 +6,16 @@ var myTweets = process.argv[2];
 var spotifyReq = process.argv[2];
 var spotifySearch = process.argv[3];
 var imdbReq = process.argv[2];
-// var imdbSearch = "\"" + process.argv[] + "\"";
-
-var sum = [];
-for (i = 3; i < process.argv.length; i++) {
-  sum.push(process.argv[i]);
-}
 var doWhat = process.argv[2];
 var artist;
 var song;
 var previewUrl;
 var album;
+var sum = [];
+
+for (i = 3; i < process.argv.length; i++) {
+  sum.push(process.argv[i]);
+}
 //Twitter Section
 
 var Twitter = require('twitter');
@@ -35,18 +34,19 @@ var client = new Twitter({
 });
 
 if(myTweets === "my-tweets"){
-var params = {screen_name: 'tacoterry3'};
-client.get('https://api.twitter.com/1.1/search/tweets.json?src=typd&q=tacoterry3', params, function(error, tweets, response) {
+  var params = {screen_name: 'tacoterry3'};
+  client.get('https://api.twitter.com/1.1/search/tweets.json?src=typd&q=tacoterry3', params, function(error, tweets, response) {
+  
   if (!error) {
   	for(var i = 0; i < tweets.statuses.length; i++){
   	console.log(tweets.statuses[i].text);
-}
+    }
   	//Trying to split or parse this ojbect
 
   	
     // console.log(JSON.parse(tweetParsed));
   }
-});
+  });
 }
 // //Twitter Section-End
 
@@ -56,69 +56,73 @@ var spotifyID = process.env.SPOTIFY_ID;
 var spotifySecret = process.env.SPOTIFY_SECRET;
  
 if(spotifyReq === "spotify-this-song"){
-var spotify = new Spotify({
+  var spotify = new Spotify({
   id: spotifyID,
   secret: spotifySecret
-});
+  });
  
-spotify.search({ type: 'track', query: "\"" + spotifySearch + "\"" }, function(err, data) {
-  if (err) {
-    return console.log('Error occurred: ' + err);
-  }
-   artist = data.tracks.items[0].artists[0].name;
-   song = data.tracks.items[0].name;
-   previewUrl = data.tracks.items[0].preview_url;
-   album = data.tracks.items[0].album.name;
- //Artists name
-console.log(artist); 
-//Song name
-console.log(song);
-if(previewUrl !== null){
-console.log(previewUrl);
-}
-else{
-	console.log("No preview available");
-} 
-console.log(album);
+  spotify.search({ type: 'track', query: "\"" + spotifySearch + "\"" }, function(err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+    artist = data.tracks.items[0].artists[0].name;
+    song = data.tracks.items[0].name;
+    previewUrl = data.tracks.items[0].preview_url;
+    album = data.tracks.items[0].album.name;
+    //Artists name
+    console.log(artist); 
+    //Song name
+    console.log(song);
+    
+    if(previewUrl !== null){
+      console.log(previewUrl);
+    }
+    else{
+	    console.log("No preview available");
+    } 
+    console.log(album);
 
 
-});
+  });
 }
 //Spotify section end
 
 //Beginning of movie section
 var request = require('request');
+
 if(imdbReq === "movie-this"){
   var dataArr;
   var dataString = "";
 
-    for(var i = 0; i<sum.length;i++){
-      dataArr = sum[i].split(",");
-      console.log(dataArr);
-        if(dataArr !== "undefined"){
-          dataArr = dataArr.toString();
-          dataString += dataArr + " ";
-        }
-      }
-      console.log(dataString);
-
-request("http://www.omdbapi.com/?t=" + dataString + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
-  if (!error && response.statusCode == 200) {
-    var title = JSON.parse(body).Title;
-    var releaseYear = JSON.parse(body).Year;
-    var rating = JSON.parse(body).imdbRating;
-    var rottenRating = JSON.parse(body).Ratings[1].Source + ": " + JSON.parse(body).Ratings[1].Value;
-    var country = JSON.parse(body).Country;
-    var language = JSON.parse(body).Language;
-    var plot = JSON.parse(body).Plot;
-    var actors = JSON.parse(body).Actors;
-    console.log(actors); 
-    console.log(JSON.parse(body).Ratings[1].Value); 
-
-  } else {
-    console.warn(error);
+  for(var i = 0; i<sum.length;i++){
+    dataArr = sum[i].split(",");
+    console.log(dataArr);
+    
+    if(dataArr !== "undefined"){
+        dataArr = dataArr.toString();
+        dataString += dataArr + " ";
+    }
   }
-});
+  console.log(dataString);
+
+  request("http://www.omdbapi.com/?t=" + dataString + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var title = JSON.parse(body).Title;
+      var releaseYear = JSON.parse(body).Year;
+      var rating = JSON.parse(body).imdbRating;
+      var rottenRating = JSON.parse(body).Ratings[1].Source + ": " + JSON.parse(body).Ratings[1].Value;
+      var country = JSON.parse(body).Country;
+      var language = JSON.parse(body).Language;
+      var plot = JSON.parse(body).Plot;
+      var actors = JSON.parse(body).Actors;
+      console.log(actors); 
+      console.log(JSON.parse(body).Ratings[1].Value); 
+
+    } 
+    else {
+      console.warn(error);
+    }
+  });
 }
 //End of movie section
 
@@ -130,38 +134,39 @@ fs.readFile("random.txt", "utf8", function(err, data) {
     return console.log(err);
   }
   if(doWhat === "do-what-it-says"){
-  var dataArr = data.split(",");
-  dataArr = dataArr[1];
+    var dataArr = data.split(",");
+    dataArr = dataArr[1];
   
   
-var spotify = new Spotify({
-  id: spotifyID,
-  secret: spotifySecret
-});
+    var spotify = new Spotify({
+      id: spotifyID,
+      secret: spotifySecret
+    });
  
-spotify.search({ type: 'track', query: "\"" + dataArr + "\"" }, function(err, data) {
-  if (err) {
-    return console.log('Error occurred: ' + err);
+    spotify.search({ type: 'track', query: "\"" + dataArr + "\"" }, function(err, data) {
+      if (err) {
+        return console.log('Error occurred: ' + err);
+      }
+      artist = data.tracks.items[0].artists[0].name;
+      song = data.tracks.items[0].name;
+      previewUrl = data.tracks.items[0].preview_url;
+      album = data.tracks.items[0].album.name;
+      //Artists name
+      console.log(artist); 
+      //Song name
+      console.log(song);
+    
+      if(previewUrl !== null){
+        console.log(previewUrl);
+      }
+      else{
+        console.log("No preview available");
+      } 
+      console.log(album);
+
+
+    });
+
   }
-   artist = data.tracks.items[0].artists[0].name;
-   song = data.tracks.items[0].name;
-   previewUrl = data.tracks.items[0].preview_url;
-   album = data.tracks.items[0].album.name;
- //Artists name
-console.log(artist); 
-//Song name
-console.log(song);
-if(previewUrl !== null){
-console.log(previewUrl);
-}
-else{
-  console.log("No preview available");
-} 
-console.log(album);
-
-
-});
-
-}
 
 });
