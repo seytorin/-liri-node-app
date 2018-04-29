@@ -52,15 +52,16 @@ if(myTweets === "my-tweets"){
 
 
 //Spotify section begin
+//Assigns env ID and Secret to variables for ease of use. 
 var spotifyID = process.env.SPOTIFY_ID;
 var spotifySecret = process.env.SPOTIFY_SECRET;
- 
+//  Checks input
 if(spotifyReq === "spotify-this-song"){
   var spotify = new Spotify({
   id: spotifyID,
   secret: spotifySecret
   });
- 
+ console.log(spotifySearch);
   spotify.search({ type: 'track', query: "\"" + spotifySearch + "\"" }, function(err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
@@ -88,6 +89,7 @@ if(spotifyReq === "spotify-this-song"){
 //Spotify section end
 
 //Beginning of movie section
+// Assigns request to API url
 var request = require('request');
 
 if(imdbReq === "movie-this"){
@@ -95,8 +97,9 @@ if(imdbReq === "movie-this"){
   var dataString = "";
 
   for(var i = 0; i<sum.length;i++){
+    
     dataArr = sum[i].split(",");
-    console.log(dataArr);
+    // console.log(dataArr);
     
     if(dataArr !== "undefined"){
         dataArr = dataArr.toString();
@@ -170,3 +173,9 @@ fs.readFile("random.txt", "utf8", function(err, data) {
   }
 
 });
+
+// console.log(process.argv[0]);
+// console.log(process.argv[1]);
+// console.log(process.argv[2]);
+
+
